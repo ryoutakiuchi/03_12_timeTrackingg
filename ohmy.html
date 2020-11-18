@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学習時間管理</title>
+
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+
+<body>
+    <div id="site-box">
+        <h1>プログラミング学習時間管理ツール</h1>
+
+        <p id="monday">
+            <input id="settime" type="button" value="スタート" onclick="cal_time(this)">
+            →
+            <label id="set_time">_____</label>
+
+            <input id="duration" type="button" value="今日の勉強時間" onclick="cal_time(this)">
+            →
+            <label id="out_duration">_____</label>
+
+
+        </p>
+
+        <p id="hozondokoro">
+            <!-- <input id="total_duration" type="button" value="累計時間" onclick="cal_time(this)">
+        →
+        <label id="total_time">_____</label> -->
+        <div>
+            <textarea id="text_area"></textarea>
+        </div>
+
+        <ul>
+            <li id="save">Save</li>
+            <li id="clear">Clear</li>
+        </ul>
+        </p>
+
+
+        <p>
+        <h1>2021 GLOBAL GEEK AUDITION <br>
+            2021年05月21日 19:00:00</h1>
+        <input id="olympic" type="button" value="確認" onclick="cal_time(this)"><br>
+        <h1 id="olympictime">_____</h1>
+        </p>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script>
+            var now = new Date();
+            // $(function () {
+            //表示時間
+            function view_time(time) {
+                var year = time.getFullYear();
+                var mon = time.getMonth() + 1;
+                var day = time.getDate();
+                var hour = time.getHours();
+                var min = time.getMinutes();
+                var sec = time.getSeconds();
+                //成型して表示
+                var s = year + "年" + mon + "月" + day + "日" + hour + "時" + min + "分" + sec + "秒";
+                return s;
+            }
+
+            //起動時に時間を表示
+            document.getElementById("set_time").innerHTML = set_start_time();
+            function set_start_time() {
+                var starttime = new Date(now.getTime());
+                return view_time(now);
+                console.log(set_start_time);
+            }
+
+
+            //時間経過
+
+            function cal_time(element) {
+                var id = element.id;
+                coltime = new Date(now.getTime());
+
+
+                switch (id) {
+                    case "year":
+                        coltime.setFullYear(coltime.getFullYear() + Number(document.getElementById("in_year").value));
+                        document.getElementById("out_year").innerHTML = view_time(coltime);
+                        break;
+                    case "mon":
+                        coltime.setMonth(coltime.getMonth() + Number(document.getElementById("in_mon").value));
+                        document.getElementById("out_mon").innerHTML = view_time(coltime);
+                        break;
+                    case "day":
+                        coltime.setDate(coltime.getDate() + Number(document.getElementById("in_day").value));
+                        document.getElementById("out_day").innerHTML = view_time(coltime);
+                        break;
+                    case "hour":
+                        coltime.setHours(coltime.getHours() + Number(document.getElementById("in_hour").value));
+                        document.getElementById("out_hour").innerHTML = view_time(coltime);
+                        break;
+                    case "min":
+                        coltime.setMinutes(coltime.getMinutes() + Number(document.getElementById("in_min").value));
+                        document.getElementById("out_min").innerHTML = view_time(coltime);
+                        break;
+                    case "sec":
+                        coltime.setSeconds(coltime.getSeconds() + Number(document.getElementById("in_sec").value));
+                        document.getElementById("out_sec").innerHTML = view_time(coltime);
+                        break;
+
+                    case "duration":
+                        var EndTime = new Date();
+                        // 経過時間をミリ秒で取得
+                        var ms = EndTime.getTime() - coltime.getTime();
+                        // ミリ秒を分に変換(端数切捨て)
+                        var secs = Math.floor(ms / (1000 * 60));
+                        document.getElementById("out_duration").innerHTML = secs + "分";
+                        break;
+
+                    case "olympic":
+                        var OlympicTime = new Date(2021, 05, 21, 19, 00, 00);
+                        var msg1 = "あと";
+                        var msg2 = "です。";
+                        // 経過時間をミリ秒で取得
+                        var ms = OlympicTime.getTime() - coltime.getTime();
+                        if (ms < 0) {
+                            ms = -1 * ms;
+                            msg1 = "既に"
+                            msg2 = "過ぎました。";
+                        }
+
+                        var days = ms / (1000 * 60 * 60 * 24); // 日数
+                        ms = ms % (1000 * 60 * 60 * 24);
+                        var hours = ms / (1000 * 60 * 60); // 時間
+                        ms = ms % (1000 * 60 * 60);
+                        var mins = ms / (1000 * 60); // 分
+                        ms = ms % (1000 * 60);
+                        var secs = ms / 1000; // 秒
+
+                        var msg = msg1
+                            + Math.floor(days) + "日"
+                            + Math.floor(hours) + "時"
+                            + Math.floor(mins) + "分"
+                            + Math.floor(secs) + "秒"
+                            + msg2;
+                        document.getElementById("olympictime").innerHTML = msg;
+                        break;
+
+
+
+
+                }
+                // 累計時間の計算
+                var EndTime = new Date();
+                // 経過時間をミリ秒で取得
+                var ms = EndTime.getTime() - coltime.getTime();
+                // ミリ秒を分に変換(端数切捨て)
+                var secs = Math.floor(ms / (1000 * 60));
+                document.getElementById("text_area").innerHTML = secs;
+
+            }
+
+
+
+
+
+
+
+
+            $(function () {
+
+                $('#save').on('click', function () {
+                    const text = $('#text_area').val();
+                    localStorage.setItem('memo', text);
+                });
+
+                $('#clear').on('click', function () {
+                    localStorage.removeItem('memo');
+                    $('#text_area').val('');
+                });
+
+
+                //3.ページ読み込み：保存データ取得表示
+                if (localStorage.getItem('memo')) {
+                    const text = localStorage.getItem('memo');
+                    $('#text_area').val(text);
+
+                }
+
+
+
+            });
+        </script>
+    </div>
+</body>
+
+</html>
